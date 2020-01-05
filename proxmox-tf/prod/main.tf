@@ -7,19 +7,21 @@ module "k3s-cluster" {
 
   name_prefix = "k3s-node"
   ips = [
-    "172.30.100.80",
-    "172.30.100.81",
-    "172.30.100.82",
-    "172.30.100.83",
+    "192.168.0.80/22",
+    "192.168.0.81/22",
+    "192.168.0.82/22",
+    "192.168.0.83/22",
   ]
 
-  sshkeys = <<EOF
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDISjep4jUbOva1XvUrMoyTJ2XLnroypaOq/my06B7idX0Y3YD51uyJmCj51g62805k8HzW65Mo1jTPfM5ezeZE7qhqMA1OJyOg1dCTiyrzgLG/BV/M42eumz9Q3bO+1BXVVO6Ai/K3fnU/g7y48mfx/1rc3IDeiD6G+Dwm7zaEYESq62rrHV44uaat3Hb3sQ22IgjQ7wqcpxT28hVSqL7PWzf8nnYGg2fJgqiky52QwLPMoGItNKnFlzp7ucIGo5qJjh1TCMlRTIzmpYgFUsf4d3gHLKpFDCuoF+F2JLLTMx8AC1ti5rrmf5oslidQtIdPfRQdC7D8dBJkeoq0UdCZ peyton@jump
-EOF
+  sshkeys = file("~/.ssh/id_rsa.pub")
+	ssh_user = "ubuntu"
 
-  gateway = "172.30.100.1"
-  bridge = "vmbr100"
+  gateway = "192.168.0.1"
+  bridge = "vmbr0"
+  cores = 2
+  memory = 2048
   storage_size = "32G"
-  storage_pool = "hermes_data"
-  target_node = "hermes"
+  storage_pool = "limages"
+  target_node = "discovery"
+	template_name = "ubuntu-ci"
 }

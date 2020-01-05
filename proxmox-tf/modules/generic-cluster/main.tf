@@ -5,11 +5,17 @@ resource "proxmox_vm_qemu" "generic-vm" {
   desc = "generic terraform-created vm"
   target_node = var.target_node
 
-  clone = "ubuntu-ci"
+  clone = var.template_name
 
+  agent = 1
+  os_type = "cloud-init"
   cores = var.cores
-  sockets = 1
+  sockets = "1"
+  vcpus = "0"
+  cpu = "host"
+  scsihw = "virtio-scsi-pci"
   memory = var.memory
+  bootdisk = "scsi0"
 
   disk {
     id = 0
@@ -24,11 +30,15 @@ resource "proxmox_vm_qemu" "generic-vm" {
     bridge = var.bridge
   }
 
+  ipconfig0 = "ip=${var.ips[count.index]},gw=${var.gateway}"
+
   ssh_user = var.ssh_user
-
-  os_type = "cloud-init"
-  ipconfig0 = "ip=${var.ips[count.index]}/24,gw=${var.gateway}"
-
   sshkeys = var.sshkeys
+
+	lifecycle {
+    ignore_changes = [
+      network
+    ]
+  }
 }
 
